@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X, Check, Loader2 } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5174';
+
 const MachineFormModal = ({ isOpen, onClose, machineToEdit, onSave }) => {
   const [formData, setFormData] = useState({
     machineId: '',
@@ -45,11 +47,11 @@ const MachineFormModal = ({ isOpen, onClose, machineToEdit, onSave }) => {
     
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:5174/api/machines/${machineToEdit.machineId}`, formData, {
+        await axios.put(`${API_BASE_URL}/api/machines/${machineToEdit.machineId}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
-        await axios.post('http://localhost:5174/api/machines', formData, {
+        await axios.post(`${API_BASE_URL}/api/machines`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }

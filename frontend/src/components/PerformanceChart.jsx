@@ -24,6 +24,8 @@ ChartJS.register(
   Filler
 );
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5174';
+
 const PerformanceChart = ({ machineId }) => {
   const [logData, setLogData] = useState([]);
 
@@ -31,7 +33,7 @@ const PerformanceChart = ({ machineId }) => {
     const fetchLogs = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:5174/api/machine/logs/${machineId}`, {
+        const res = await axios.get(`${API_BASE_URL}/api/machine/logs/${machineId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setLogData(res.data);

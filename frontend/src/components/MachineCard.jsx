@@ -3,7 +3,9 @@ import axios from 'axios';
 import { Power, RotateCcw, AlertOctagon, Activity, Thermometer, Zap, Clock, Edit2, Trash2 } from 'lucide-react';
 import PerformanceChart from './PerformanceChart';
 
-const MachineCard = ({ machine, userRole, onEdit }) => {
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5174';
+
+const MachineCard = ({ machine, userRole, onEdit, onActionDone }) => {
   const [loadingAction, setLoadingAction] = useState(false);
   const [uptime, setUptime] = useState('');
   const token = localStorage.getItem('token');
@@ -45,7 +47,7 @@ const MachineCard = ({ machine, userRole, onEdit }) => {
     setLoadingAction(true);
     try {
       await axios.post(
-        `http://localhost:5174/api/machine/${command}`, 
+        `${API_BASE_URL}/api/machine/${command}`, 
         { machineId: machine.machineId },
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -54,6 +56,7 @@ const MachineCard = ({ machine, userRole, onEdit }) => {
       alert(err.response?.data?.message || err.message || `Failed to send ${command} command`);
     } finally {
       setLoadingAction(false);
+      if (onActionDone) onActionDone();
     }
   };
 
@@ -63,14 +66,15 @@ const MachineCard = ({ machine, userRole, onEdit }) => {
 
     setLoadingAction(true);
     try {
-      await axios.delete(`http://localhost:5174/api/machines/${machine.machineId}`, {
+      await axios.delete(`${API_BASE_URL}/api/machines/${machine.machineId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || err.message || 'Failed to delete machine');
-      setLoadingAction(false); // Only set false on error, on success unmount happens via socket
+      setLoadingAction(false);
     }
+    if (onActionDone) onActionDone();
   };
 
   const statusColor = 
