@@ -13,7 +13,7 @@ const Login = ({ setAuth }) => {
     setIsLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:5174/api/login', { username, password });
+      const res=await axios.post('https://your-backend-name.onrender.com/api/login', { username, password });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify({ username: res.data.username, role: res.data.role }));
       setAuth(true);
